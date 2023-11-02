@@ -1,0 +1,29 @@
+TEAM_NAME= SakkyraKing_KevinRivers
+KUID= 3017504_
+LAB= QUASH
+TAR_BASENAME=$(LAB)_$(TEAM_NAME)_$(KUID)
+CCFLAGS = -g -Wall -Werror -Wextra -pedantic
+
+DELIVERABLES=quash.c quash.h execmd.c
+CMD=./quash
+
+tar: clean
+#    create temp dir
+    mkdir $(TAR_BASENAME)
+#    copy the necessary files into the temp dir
+    cp $(DELIVERABLES) Makefile $(TAR_BASENAME)
+#    create the submission tar.gz
+    tar cvzf $(TAR_BASENAME).tar.gz $(TAR_BASENAME)
+#    remove the temp dir
+    rm -rf $(TAR_BASENAME)
+    
+quash: quash.c quash.h execmd.c
+    gcc $(CCFLAGS) $^ -o $@
+
+valgrind: quash
+    valgrind --leak-check=full --show-leak-kinds=all $(CMD)
+
+clean:
+    rm -f *.o *.txt $(TAR_BASENAME)*
+
+.PHONY: clean tar
